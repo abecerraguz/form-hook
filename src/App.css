@@ -1,38 +1,112 @@
-.App {
-  text-align: center;
+body{
+  background-color: #2a2a2a;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
+body * {
+  box-sizing: border-box;
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
 }
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+h1{
+  margin: 1rem 0;
+  padding: 0 0 0.5rem 0;
+  color: #fff;
+  border-bottom: 1px solid grey;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+.container{
+  max-width: 600px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
+  list-style: none;
+}
+
+.contentForm{
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  height: auto;
+  background-color: rgb(172 172 172 / 48%);
+  border-radius: 5px;
+  border: 1px solid grey;
+  padding: 0 1rem 2rem 1rem;
+  white-space: nowrap;
+}
+
+.contentForm__group{
+  width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: flex-start;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  background-color: rgb(71 71 71 / 54%);
+  border-radius: 10px;
+  padding: 1.3rem;
+  margin: 1rem 0;
+  color: #fff;
+}
+.contentForm__group label{
+  width:35%;
+  letter-spacing: 1px;
+}
+.contentForm__group input{
+  width: 65%;
+  height: 35px;
+  border-radius: 5px;
+  border:none;
+  padding: 5px 10px;
 }
 
-.App-link {
-  color: #61dafb;
+.contentForm__buttom{
+  border-radius: 10px;
+  padding: 15px 20px;
+  background-color: aqua;
+  color: #fff;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.contentForm__btn{
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  background: #3e3e3e;
+  color: #fff;
+  box-shadow: 2px 2px 8px rgb(0 0 0 / 40%);
+  cursor: pointer;
+  transition: all 0.3s ease-in;
+}
+
+.contentForm__btn:hover{
+  background: #2f2f2f;
+}
+
+.resData ul{
+  list-style: none;
+  color:#fff;
+  margin: 0;
+  padding: 0;
+}
+
+.resData ul h4{
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  border-bottom: 1px solid #fff;
+  padding-bottom: 17px;
+  margin: 2rem 0 0 0;
+}
+
+.resData ul li{
+  padding:1rem 0;
+  border-bottom: 1px solid rgba(255,255,255,0.3);
+}
+
+input::placeholder {
+  color: rgb(165, 165, 165);
+  font-size: 1.2em;
+  font-style: italic;
+  letter-spacing: 1px;
 }

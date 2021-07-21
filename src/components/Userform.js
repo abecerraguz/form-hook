@@ -1,16 +1,10 @@
 import React, { Fragment, useReducer } from  'react';
 
 /*
-
 useReducer es un Hook que maneja el estado de nuestro componente.
 Trabaja con una función que esta encaragada de manejar el estado, modificarlo , obtenerlo etc.
-
 Con el Hook vamos a poder decirle con que funcion estanos trabajando o inicializando. 
-
 Luego el estado lo vamos a poder utilizar en cualquier parte de nuestro componente.
-
-
-
 */
     
     

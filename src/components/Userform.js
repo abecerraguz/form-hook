@@ -1,185 +1,350 @@
-import React, { Fragment, useState } from  'react';
+import React, { Fragment, useReducer,useState } from  'react';
 
+/*
+useReducer es un Hook que maneja el estado de nuestro componente.
+Trabaja con una función que esta encaragada de manejar el estado, modificarlo , obtenerlo etc.
+Con el Hook vamos a poder decirle con que funcion estanos trabajando o inicializando. 
+Luego el estado lo vamos a poder utilizar en cualquier parte de nuestro componente.
+*/
     
     
 const Userform = (props) => {
 
-// Similar a componentDidMount y componentDidUpdate:
-//    useEffect(() => {
-//       
-//         let find = document.querySelector('.contentForm')
-//         find.innerHTML.replace(/\&nbsp;/g, '')
-//         console.log('find-->', find.innerHTML);   
-//    });
+    /*
+        COMO FUNCIONA USEREDUCER
+        Primero obtenemos dos cosas primero el estado (state) en el que se encuentran las variables del componente,
+        Segundo una función dispatch en la cual va a poder lanzar accciones que van a repercutir en el useReducer que creemos.
+    */
 
-    const [datos, setDatos] = useState({
-        FirstName: '',
-        LastName: '',
-        Email: '',
-        Password: '',
-        ConfirmPassword: ''
-    })
+    // 
+     const initialState = {
 
-    const [hasBeenSubmitted, setHasBeenSubmitted] = useState(false);
-    const [firstname, setFirstname] = useState("");
-    const [lastname, setLastname] = useState("");
-    const [mail, setMail] = useState("");
-    const [passworduno, setPassworduno] = useState("");
-    const [passworddos, setPassworddos] = useState("");
+         IngreseUsuario : 'Ingrese datos del formulario',
+         FirstName : '',
+         LastName : '',
+         Email : '',
+         Password : '',
+         ConfirmPassword : '',
 
+         validationErrs: {
+            FirstName : '',
+            LastName : '',
+            Email : '',
+            Password : '',
+            ConfirmPassword : '',
+            EnviadoOkey: 'Se han enviado los datos correctamente'
+         },
+         isSubmiting: true
+     }   
 
- 
+    /*
+        Se crea una funcion reducer, esta es una función pura que no debe modificar el
+        estado original si no debe cambiar a un nuevo estado. Para esto tendremos dos parametros;
+        state (Estado actual), action ( La acción que estamos enviando ) esta la envia el dispatch().
+    */
 
+    const reducer = ( state, action ) =>{
 
-    const handleInputChange = (event) => {
-        // console.log(event.target.name)
-        // console.log('Holaaaaaaaa',event.target.value.length)
-        setDatos({
-            ...datos,
-            [event.target.name] : event.target.value
-        })
+        // Este log recibe la data de dispatch({type:'CH_NOMBRE', value:event.target.value}) 
+        console.log('Valor de action-->', state);
 
-        // console.log('events-->', event.target.name);
-        if(event.target.name === 'FirstName'){
-            if(event.target.value.length >= 2){
-                setFirstname(null);
-            }else{
-                setFirstname('El primer nombre debe tener al menos 2 caracteres')
-            }
+        /*
+        Podemos eveluar el type (Tipo de acción ) con un switch o sea evaluamos
+        que dato esta llegando (O sea evalua que tipo de dispatch esta llegando)
+        */
+
+        switch (action.type) {
+                // Si pasa la accion nombre que es el que deseo hacer
+                case 'CH_FIRSTNAME' : {
+                 // Aqui retornamos un objeto que represente todo el estado que ya tenemos
+                 /*
+                 Esto es diferente al useState aqui el estado 
+                 se machaca entero 
+                 */
+                 return {
+                     // Para asegurarnos que el estado se mantenga inmutable usamos un spred operator que tomo todo 
+                     // El estado anterior y lo guarda
+                     ...state,
+                     // Luego modificamos sólo el campo que nos interesa que es nombre
+                     FirstName:action.value,
+                 }
+                }
+               
+
+                case 'CH_LASTNAME' : {
+                    return{
+                        ...state,
+                        LastName:action.value
+                    }
+                }
+
+                case 'CH_EMAIL' : {
+                    return{
+                        ...state,
+                        Email:action.value
+                    }
+                }
+
+                case 'CH_PASSWORD' : {
+                    return{
+                        ...state,
+                        Password:action.value
+                    }
+                }
+
+                case 'CH_CONFIRMPASSWORD' : {
+                    return{
+                        ...state,
+                        ConfirmPassword:action.value
+                    }
+                }
+
+                case "SUBMIT_VALIDATE":
+                    return {
+                      ...state,
+                      validationErrs: {
+                        FirstName : '',
+                        LastName : '',
+                        Email : '',
+                        Password : '',
+                        ConfirmPassword : '',
+                        ...validateOnSubmit(state),
+                        isSubmiting: false,
+                      }, 
+                }
+
+                case 'RESET' : {
+                    return initialState
+                }
+
+                case 'SBM_CLEAR' : {
+                    return {
+                        ...state,
+                        FirstName:action.value ='',
+                        LastName:action.value ='',
+                        Email:action.value ='',
+                        Password:action.value ='',
+                        ConfirmPassword:action.value ='',
+                        IngreseUsuario:action = 'Los Datos fueron ingresados' 
+                    }
+                }
+
+                default:
+                    console.log('default desde el switch');
         }
-
-        if(event.target.name === 'LastName'){
-            if(datos.LastName.length >= 2){
-                setLastname(null);
-            }else{
-                setLastname('El Segundo nombre debe tener al menos 2 caracteres')
-            }
-        }
-
-        if(event.target.name === 'Email'){
-            if(datos.Email.length > 5){
-                setMail(null);
-            }else{
-                setMail('El Email debe tener al menos 5 caracteres')
-            }
-        }
-
-        if(event.target.name === 'Password'){
-
-            if(datos.Password.length >= 8){
-                setPassworduno(null);
-            }else{
-                setPassworduno('Las contraseñas deben coincidir y tener al menos 8 caracteres')
-            }
-
-            
-        }
-
-        if(event.target.name === 'ConfirmPassword'){
-            console.log('datos.ConfirmPassword === datos.Password-->', event.target.value)
-            if(datos.ConfirmPassword.length > 8 && datos.ConfirmPassword.value === datos.Password.value){
-                setPassworddos(null);
-            }else{
-                setPassworddos('Las contraseñas deben coincidir y tener al menos 8 caracteres')
-            }
-        }
-
-
+        return state;
     }
-    
 
+    // El useReducer va a contener una funcíon que contendra el estado inicial del componente y la accion que se ejecute en reducer
+    const [state, dispatch] = useReducer(reducer, initialState); 
 
+    // Validation functions con el cambio del estado
+    function validateOnSubmit(state) {
 
-    const enviarDatos = (event) => {
-        event.preventDefault()
-        // if(datos.FirstName == "" || datos.LastName == "" || datos.Email == "" || datos.Password == ""){
-        //     setTitleError("Debe ingresar los datos!");
-        //     console.log('Debe ingresar los datos');
-        // }
+        // Desestructuramos el estado
+        const { FirstName, LastName, Email, Password, ConfirmPassword } = state;
+        let validationErrs = {};
+
+        // Validacion Primer Nombre
+        if (!FirstName) {
+            validationErrs.FirstName = "Se requiere el Nombre";
+        }else if(FirstName.length > 2){
+            validationErrs.FirstName = "";
+        }else if(FirstName.length < 2){
+            validationErrs.FirstName = "El nombre debe tener al menos 2 caracteres";
+        }
+
+        // Validacion Primer Nombre
+        if (!LastName) {
+            validationErrs.LastName = "Se requiere el Nombre";
+        }else if(LastName.length > 2){
+            validationErrs.LastName = "";
+        }else if(LastName.length < 2){
+            validationErrs.LastName = "El nombre debe tener al menos 2 caracteres";
+        }
+
+        // Validacion de Email
+        if (!Email) {
+            validationErrs.Email = "Correo electronico es requerido";
+            console.log('validationErrs.Email---Correo electronico es requerido')
+        }
+        else if(!/\S+@\S+\.\S+/.test(Email) && Email.length > 5){
+            validationErrs.Email = "";
+            console.log('validationErrs.Email---Debería ser un correo electrónico')
+        } else if(!/\S+@\S+\.\S+/.test(Email)){
+            validationErrs.Email = "Debería ser un correo electrónico";
+            console.log('validationErrs.Email---Debería ser un correo electrónico')
+        }
        
-        if(datos.FirstName !== "" || datos.LastName !== "" || datos.Email !== "" || datos.Password !== ""){
-            setHasBeenSubmitted(true);
-            let obj = {
-                firstName : datos.FirstName,
-                LastName :datos.LastName,
-                Email : datos.Email,
-                password : datos.Password,
-                confirmPasword : datos.ConfirmPassword
-            }
-    
-            let formAfter = document.querySelector('.resData');
-    
-            formAfter.innerHTML = `
-                <ul>
-                <h4>Your Form Data</h4>
-                <li>First Name : ${obj.firstName}</li>
-                <li>Last Name : ${obj.LastName}</li>
-                <li>Email : ${obj.Email}</li>
-                <li>Password : ${obj.password}</li>
-                </ul>
-            `;
-        } 
+        // Validacion de Password
+        if (!Password) {
+            validationErrs.Password = "Se requiere contraseña";
+        }else if (Password.length < 4){
+            validationErrs.Password = "La contraseña debe tener al menos 4 caracteres";
+        }
+
+        // Validacion de Password
+        if (!ConfirmPassword) {
+            validationErrs.ConfirmPassword = "Se requiere contraseña";
+        }else if (ConfirmPassword.length < 4){
+            validationErrs.ConfirmPassword = "La contraseña debe tener al menos 4 caracteres";
+        }
+
+        return validationErrs;
+    }
+
+    // Envio de data
+    const handleSubmit = (event) =>{
+        event.preventDefault();
+        // document.getElementById('FirstName').value = '';
+        // document.getElementById('LastName').value = '';
+        // document.getElementById('Email').value = '';
+        // document.getElementById('Password').value = '';
+        // document.getElementById('ConfirmPassword').value = '';
+        dispatch({type:'SBM_CLEAR'}) 
     }
 
 
-    
     return(
          <Fragment>
-            {hasBeenSubmitted ? 
-                <h1>¡Gracias por enviar el formulario!</h1>
-                :
-                <h1>Bienvenido, envíe el formulario</h1> 
-            }
-            <form className="contentForm" onSubmit={enviarDatos}>
+
+             {state.isSubmiting ? 
+                <h1 dangerouslySetInnerHTML={{ __html:state.IngreseUsuario}}></h1>
+              :
+                null
+             }
+
+            <form className="contentForm" onSubmit={handleSubmit}>
                 <div className="contentForm__group">
                     <label>First Name</label>
-                    <input type="text" placeholder="First Name" className="form-control" onChange={handleInputChange} onBlur={outValidateInputs} name="FirstName"></input>
-                </div>
+                    <input 
+                     type="text"
+                     placeholder="First Name" 
+                     className="form-control" 
+                     name="FirstName" 
+                     value={state.FirstName}
+                     id="FirstName"
+                     /*
+                        onChage toma el valor cuando va cambiando, pero en useReducer
+                        el cambio de valor ya no pasa por el onChange pasa por el dispatch 
+                        y este pase la accion al reducer para esto llamamos a la funcion 
+                        dispatch() esta tiene un objeto con dos valores:
+                        type:'' (Tipo de accion),
+                        value:event.target.value
 
-                {firstname?
-                    <small className="inputError">{firstname}</small> :
-                  ''
+                        El dispatch mando este objeto y lo manda a reducer en action
+                     */
+
+                     onChange={(event) => {
+                         dispatch({type:'CH_FIRSTNAME', value:event.target.value})
+                         dispatch({type:'SUBMIT_VALIDATE'}) 
+                     }}
+                     />
+                </div>
+                {state.validationErrs.FirstName ?
+                    <span className="validation-errors" dangerouslySetInnerHTML={{ __html:state.validationErrs.FirstName}}></span>
+                    :
+                    null
                 }
+  
                 <div className="contentForm__group">
                     <label>Last Name</label>
-                    <input type="text" placeholder="Last Name" className="form-control" onChange={handleInputChange} name="LastName"></input>
+                    <input type="text"
+                        placeholder="Last Name"
+                        className="form-control"
+                        name="LastName" 
+                        value={state.LastName}
+                        onChange={(event) => {
+                            dispatch({type:'CH_LASTNAME', value:event.target.value})
+                            dispatch({type:'SUBMIT_VALIDATE'})  
+                        }}
+                        id="LastName"
+                     />
                 </div>
-                {lastname?
-                    <small className="inputError">{lastname}</small> :
-                    ''
+
+                {state.validationErrs.LastName?
+                    <span className="validation-errors" dangerouslySetInnerHTML={{ __html: state.validationErrs.LastName}}></span>
+                :
+                null
                 }
+               
+    
                 <div className="contentForm__group">
                     <label>Email</label>
-                    <input type="email" placeholder="Email" className="form-control" onChange={handleInputChange} name="Email"></input>
+                    <input
+                        type="email"
+                        placeholder="Email"
+                        className="form-control"
+                        name="Email"
+                        value={state.Email}
+                        onChange={(event) => {
+                            dispatch({type:'CH_EMAIL', value:event.target.value})
+                            dispatch({type:'SUBMIT_VALIDATE'}) 
+                        }}
+                        id="Email"
+                    />
                 </div>
-                {
-                    mail?
-                    <small className="inputError">{mail}</small> :
-                    ''
+                {state.validationErrs.Email?
+                    <span className="validation-errors" dangerouslySetInnerHTML={{ __html:state.validationErrs.Email}}></span>
+                :
+                null
                 }
+ 
                 <div className="contentForm__group">
                     <label>Password</label>
-                    <input type="password" placeholder="Password" className="form-control" onChange={handleInputChange} name="Password"></input>
+                    <input 
+                      type="password"
+                      placeholder="Password"
+                      className="form-control"
+                      name="Password" 
+                      value={state.Password}
+                      onChange={(event) => {
+                        dispatch({type:'CH_PASSWORD', value:event.target.value})
+                        dispatch({type:'SUBMIT_VALIDATE'})  
+                      }}
+                      id="Password"
+                    />
                 </div>
-                {
-                    passworduno ?
-                    <small className="inputError">{ passworduno }</small> :
-                    ''
+
+                {state.validationErrs.Password?
+                    <span className="validation-errors" dangerouslySetInnerHTML={{ __html:state.validationErrs.Password}}></span>
+                :
+                null
                 }
+
+
                 <div className="contentForm__group">
                     <label>Confirm Password</label>
-                    <input type="password" placeholder="Confirm Password" className="form-control" onChange={handleInputChange} name="ConfirmPassword"></input>
+                    <input 
+                     type="password"
+                     placeholder="Confirm Password"
+                     className="form-control"
+                     name="ConfirmPassword"
+                     value={state.ConfirmPassword}
+                     onChange={(event) => {
+                        dispatch({type:'CH_CONFIRMPASSWORD', value:event.target.value})
+                        dispatch({type:'SUBMIT_VALIDATE'})  
+                     }}
+                     id="ConfirmPassword"
+                     />
                 </div>
-                {
-                    passworddos ?
-                    <small className="inputError">{passworddos}</small> :
-                    ''
+                {state.validationErrs.ConfirmPassword?
+                    <span className="validation-errors" dangerouslySetInnerHTML={{ __html:state.validationErrs.ConfirmPassword}}></span>
+                :
+                null
                 }
-                <button type="submit" className="contentForm__btn">Send</button>
+       
+                <button type="submit" 
+                    onClick={ ()=>dispatch({type:'SUBMIT_VALIDATE'}) }  
+                    className="contentForm__btn">
+                    Send
+                </button>
             </form>
-            <div className="resData"></div>
+            <button type="submit" onClick={ ()=>dispatch({type:'RESET'}) } className="contentForm__btn-reset">RESET FORM</button>
         </Fragment>
     );
 };
     
 export default Userform;
+
+   

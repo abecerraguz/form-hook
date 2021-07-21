@@ -13,6 +13,8 @@ h1{
   border-bottom: 1px solid grey;
   text-transform: uppercase;
   letter-spacing: 2px;
+  font-size: 2rem;
+  text-align: center;
 }
 .container{
   max-width: 600px;
@@ -27,9 +29,8 @@ h1{
   max-width: 600px;
   margin: 0 auto;
   height: auto;
-  background-color: rgb(172 172 172 / 48%);
+  background-color: #000;
   border-radius: 5px;
-  border: 1px solid grey;
   padding: 0 1rem 2rem 1rem;
   white-space: nowrap;
 }
@@ -84,6 +85,27 @@ h1{
   background: #2f2f2f;
 }
 
+.contentForm__btn-reset{
+  display: block;
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  background: #545454;
+  color: #fff;
+  box-shadow: 2px 2px 8px rgb(0 0 0 / 40%);
+  cursor: pointer;
+  transition: all 0.3s ease-in;
+  margin: 1rem 0;
+}
+
+.contentForm__btn-reset:hover{
+  background: #2f2f2f;
+  margin: 1rem 0;
+}
+
 .resData ul{
   list-style: none;
   color: #fff;
@@ -108,5 +130,15 @@ input::placeholder {
   color: rgb(165, 165, 165);
   font-size: 1.2em;
   font-style: italic;
+  letter-spacing: 1px;
+}
+
+.validation-errors{
+  color: rgb(255, 0, 0);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
+  display: block;
+  padding: 0 0 10px 10px;
+  margin-bottom: 5px;
+  font-size: 14px;
   letter-spacing: 1px;
 }

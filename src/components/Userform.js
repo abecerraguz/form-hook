@@ -18,11 +18,21 @@ const Userform = (props) => {
 
     // 
      const initialState = {
+
          FirstName : '',
          LastName : '',
          Email : '',
          Password : '',
-         ConfirmPassword : ''
+         ConfirmPassword : '',
+
+         validationErrs: {
+            FirstName : '',
+            LastName : '',
+            Email : '',
+            Password : '',
+            ConfirmPassword : ''
+         },
+         isSubmiting: false
      }   
 
     /*
@@ -33,7 +43,7 @@ const Userform = (props) => {
 
     const reducer = (state,action) =>{
         // Este log recibe la data de dispatch({type:'CH_NOMBRE', value:event.target.value}) 
-        console.log('Valor de action-->', action);
+        console.log('Valor de action-->', state);
         /*
         Podemos eveluar el type con un switch o sea evaluamos
          que dato esta llegando (O sea evalua que tipo de dispatch esta llegando)
@@ -51,9 +61,13 @@ const Userform = (props) => {
                      // El estado anterior y lo guarda
                      ...state,
                      // Luego modificamos sólo el campo que nos interesa que es nombre
-                     FirstName:action.value
+                     FirstName:action.value,
+                     validationErrs: {
+                        ...state.validationErrs
+                      }
                  }
                 }
+               
 
                 case 'CH_LASTNAME' : {
                     return{
@@ -84,8 +98,23 @@ const Userform = (props) => {
                 }
 
                 case 'RESET' : {
+
                     return initialState
                 }
+
+                case "SUBMIT_VALIDATE":
+                    return {
+                      ...state,
+                      validationErrs: {
+                        Email : '',
+                        Password : '',
+                        ...validateOnSubmit(state)
+                      },
+                      isSubmiting: true
+                }
+
+                default:
+                    console.log('default desde el switch');
 
         }
         return state;
@@ -127,8 +156,12 @@ const Userform = (props) => {
 
                      />
                 </div>
-
-        
+                {state.validationErrs.FirstName?
+                    <span className="validation-errors" dangerouslySetInnerHTML={{ __html:state.validationErrs.FirstName}}></span>
+                :
+                null
+                }
+  
                 <div className="contentForm__group">
                     <label>Last Name</label>
                     <input type="text"
@@ -136,13 +169,18 @@ const Userform = (props) => {
                         className="form-control"
                         name="LastName" 
                         value={state.LastName}
-
                         onChange={(event) => {
                             dispatch({type:'CH_LASTNAME', value:event.target.value}) 
                         }}
-
                      />
                 </div>
+
+                {state.validationErrs.LastName?
+                    <span className="validation-errors" dangerouslySetInnerHTML={{ __html: state.validationErrs.LastName}}></span>
+                :
+                null
+                }
+               
     
                 <div className="contentForm__group">
                     <label>Email</label>
@@ -157,7 +195,12 @@ const Userform = (props) => {
                         }}
                     />
                 </div>
-
+                {state.validationErrs.Email?
+                    <span className="validation-errors" dangerouslySetInnerHTML={{ __html:state.validationErrs.Email}}></span>
+                :
+                null
+                }
+ 
                 <div className="contentForm__group">
                     <label>Password</label>
                     <input 
@@ -172,6 +215,13 @@ const Userform = (props) => {
                     />
                 </div>
 
+                {state.validationErrs.Password?
+                    <span className="validation-errors" dangerouslySetInnerHTML={{ __html:state.validationErrs.Password}}></span>
+                :
+                null
+                }
+
+
                 <div className="contentForm__group">
                     <label>Confirm Password</label>
                     <input 
@@ -185,7 +235,13 @@ const Userform = (props) => {
                      }}
                      />
                 </div>
-                <button type="submit" className="contentForm__btn">Send</button>
+                {state.validationErrs.ConfirmPassword?
+                    <span className="validation-errors" dangerouslySetInnerHTML={{ __html:state.validationErrs.ConfirmPassword}}></span>
+                :
+                null
+                }
+       
+                <button type="submit" onClick={ ()=>dispatch({type:'SUBMIT_VALIDATE'}) }  className="contentForm__btn">Send</button>
             </form>
             <button type="submit" onClick={ ()=>dispatch({type:'RESET'}) } className="contentForm__btn-reset">RESET FORM</button>
         </Fragment>
@@ -193,3 +249,55 @@ const Userform = (props) => {
 };
     
 export default Userform;
+
+    // Validation functions
+    function validateOnSubmit(state) {
+
+        const { FirstName, LastName, Email, Password, ConfirmPassword } = state;
+
+        let validationErrs = {};
+
+        console.log('validationErrs-->',validationErrs)
+
+        // Validacion Primer Nombre
+        if (!FirstName) {
+            validationErrs.FirstName = "Se requiere el Nombre";
+        }else if (FirstName.length < 10){
+            validationErrs.FirstName = "El nombre debe tener al menos 10 caracteres";
+        }
+
+        // Validacion Primer Nombre
+        if (!LastName) {
+            validationErrs.LastName = "Se requiere el segundo nombre";
+        }else if (FirstName.length < 10){
+            validationErrs.LastName = "El nombre debe tener al menos 10 caracteres";
+        }
+
+        
+        // Validacion de Email
+        if (!Email) {
+            validationErrs.Email = "Correo electronico es requerido";
+            console.log('validationErrs.Email---Correo electronico es requerido')
+        }
+        else if (!/\S+@\S+\.\S+/.test(Email)){
+            validationErrs.Email = "Debería ser un correo electrónico";
+            console.log('validationErrs.Email---Debería ser un correo electrónico')
+        }
+       
+        // Validacion de Password
+        if (!Password) {
+            validationErrs.Password = "Se requiere contraseña";
+        }else if (Password.length < 10){
+            validationErrs.Password = "La contraseña debe tener al menos 10 caracteres";
+        }
+
+        // Validacion de Password
+        if (!ConfirmPassword) {
+            validationErrs.ConfirmPassword = "Se requiere contraseña";
+        }else if (ConfirmPassword.length < 10){
+            validationErrs.ConfirmPassword = "La contraseña debe tener al menos 10 caracteres";
+        }
+       
+
+        return validationErrs;
+    }

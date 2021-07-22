@@ -1,4 +1,4 @@
-import React, { Fragment, useReducer,useState } from  'react';
+import React, { Fragment, useReducer} from  'react';
 
 /*
 useReducer es un Hook que maneja el estado de nuestro componente.
@@ -6,8 +6,7 @@ Trabaja con una función que esta encaragada de manejar el estado, modificarlo ,
 Con el Hook vamos a poder decirle con que funcion estanos trabajando o inicializando. 
 Luego el estado lo vamos a poder utilizar en cualquier parte de nuestro componente.
 */
-    
-    
+   
 const Userform = (props) => {
 
     /*
@@ -39,8 +38,8 @@ const Userform = (props) => {
 
     /*
         Se crea una funcion reducer, esta es una función pura que no debe modificar el
-        estado original si no debe cambiar a un nuevo estado. Para esto tendremos dos parametros;
-        state (Estado actual), action ( La acción que estamos enviando ) esta la envia el dispatch().
+        estado original si no debe cambiar a un NUEVO ESTADO. Para esto tendremos dos parametros;
+        STATE (Estado actual), ACTION ( La acción que estamos enviando ) esta la envia el DISPATCH().
     */
 
     const reducer = ( state, action ) =>{
@@ -143,7 +142,9 @@ const Userform = (props) => {
 
         // Desestructuramos el estado
         const { FirstName, LastName, Email, Password, ConfirmPassword } = state;
+
         let validationErrs = {};
+    
 
         // Validacion Primer Nombre
         if (!FirstName) {
@@ -154,7 +155,7 @@ const Userform = (props) => {
             validationErrs.FirstName = "El nombre debe tener al menos 2 caracteres";
         }
 
-        // Validacion Primer Nombre
+        // Validacion Segundo Nombre
         if (!LastName) {
             validationErrs.LastName = "Se requiere el Nombre";
         }else if(LastName.length > 2){

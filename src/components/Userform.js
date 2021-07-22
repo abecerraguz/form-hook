@@ -10,7 +10,7 @@ Luego el estado lo vamos a poder utilizar en cualquier parte de nuestro componen
 const Userform = (props) => {
 
     /*
-        COMO FUNCIONA USEREDUCER
+        COMO FUNCIONA USEREDUCERR
         Primero obtenemos dos cosas primero el estado (state) en el que se encuentran las variables del componente,
         Segundo una función dispatch en la cual va a poder lanzar accciones que van a repercutir en el useReducer que creemos.
     */
